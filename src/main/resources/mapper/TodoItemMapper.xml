@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- MyBatisマッパーファイルで、TodoItemMapperのSQLマッピングを定義 -->
+<mapper namespace="com.example.todolist.mapper.TodoItemMapper">
+
+    <!-- タスクの全件取得 -->
+    <select id="findAll" resultType="com.example.todolist.domain.TodoItem">
+        SELECT * FROM todo_items
+    </select>
+
+    <!-- タスクの追加 -->
+    <insert id="insert" parameterType="com.example.todolist.domain.TodoItem">
+        INSERT INTO todo_items (task, content, created_date, deadline, completed)
+        VALUES (#{task}, #{content}, #{createdDate}, #{deadline}, #{completed})
+        <!-- #{property} はMyBatisでオブジェクトのプロパティ値をバインドするために使用 -->
+    </insert>
+
+    <!-- タスクの更新 -->
+    <update id="update" parameterType="com.example.todolist.domain.TodoItem">
+        UPDATE todo_items
+        SET task = #{task}, content = #{content}, deadline = #{deadline}, completed = #{completed}
+        WHERE id = #{id}
+        <!-- idを基準にタスクを更新 -->
+    </update>
+
+    <!-- タスクの削除 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM todo_items WHERE id = #{id}
+        <!-- 指定されたidのタスクを削除 -->
+    </delete>
+
+    <!-- IDでタスクを取得 -->
+    <select id="findById" resultType="com.example.todolist.domain.TodoItem">
+        SELECT * FROM todo_items WHERE id = #{id}
+        <!-- idを使用してタスクを取得 -->
+    </select>
+
+</mapper>

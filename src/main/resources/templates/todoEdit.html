@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Thymeleafテンプレートエンジンのネームスペース -->
+<head>
+    <meta charset="UTF-8"> <!-- 文書の文字エンコーディングをUTF-8に設定 -->
+    <title>Edit To-Do Item</title> <!-- ページタイトルの設定 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrapのスタイル適用 -->
+</head>
+<body>
+    <div class="container mt-5"> <!-- コンテンツを囲むBootstrapコンテナ -->
+        <h1 class="text-center mb-4">Edit To-Do Item</h1> <!-- 中央揃えのページタイトル -->
+
+        <!-- タスク編集フォーム。todoItemがnullでない場合のみ表示 -->
+        <form th:action="@{/todos/edit}" method="post" th:if="${todoItem != null}">
+            <input type="hidden" th:value="${todoItem.id}" name="id"> <!-- タスクIDを保持する隠しフィールド -->
+            <div class="form-group">
+                <label for="task">Task Title</label> <!-- タイトル入力フィールドのラベル -->
+                <input type="text" class="form-control" id="task" name="task" th:value="${todoItem.task}" required> <!-- タスクタイトル入力欄 -->
+            </div>
+            <div class="form-group">
+                <label for="content">Task Content</label> <!-- 内容入力フィールドのラベル -->
+                <input type="text" class="form-control" id="content" name="content" th:value="${todoItem.content}" required> <!-- タスク内容入力欄 -->
+            </div>
+            <div class="form-group">
+                <label for="deadline">Deadline</label> <!-- 締め切り入力フィールドのラベル -->
+                <!-- 締め切り日選択欄、Thymeleafで日付をフォーマット -->
+                <input type="date" class="form-control" id="deadline" name="deadline" 
+                       th:value="${todoItem.deadline != null ? #temporals.format(todoItem.deadline, 'yyyy-MM-dd') : ''}" required>
+            </div>
+            <div class="form-group">
+                <label for="completed">Completed</label> <!-- 完了状態のラベル -->
+                <input type="checkbox" id="completed" name="completed" th:checked="${todoItem.completed}"> <!-- 完了チェックボックス -->
+            </div>
+            <button type="submit" class="btn btn-primary">Update To Do</button> <!-- 更新ボタン -->
+            <a href="/todos" class="btn btn-secondary">Back to To-Do List</a> <!-- タスクリストに戻るボタン -->
+        </form>
+
+        <!-- todoItemがnullの場合に表示する警告メッセージ -->
+        <div th:if="${todoItem == null}" class="alert alert-danger text-center mt-4">
+            The to-do item you are trying to edit does not exist.
+        </div>
+    </div>
+</body>
+</html>

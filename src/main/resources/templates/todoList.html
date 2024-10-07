@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> <!-- Thymeleafテンプレートエンジンのネームスペース -->
+<head>
+    <meta charset="UTF-8"> <!-- 文書の文字エンコーディングをUTF-8に設定 -->
+    <title>To-Do List</title> <!-- ページタイトルの設定 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrapのスタイル適用 -->
+    <style>
+        .text-center {
+            text-align: center; /* テキストを中央に配置 */
+        }
+        .table {
+            margin: auto; /* テーブルを中央に配置 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5"> <!-- コンテンツを囲むBootstrapコンテナ -->
+        <h1 class="text-center mb-4">To-Do List</h1> <!-- タスクリストのタイトルを中央揃えで表示 -->
+        <a href="/todos/new" class="btn btn-primary mb-3">Add New Task</a> <!-- 新しいタスクを追加するボタン -->
+
+        <!-- タスクリストを表示するテーブル -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">ID</th> <!-- タスクのIDを表示 -->
+                    <th class="text-center">Task</th> <!-- タスクのタイトルを表示 -->
+                    <th class="text-center">Content</th> <!-- タスクの内容を表示 -->
+                    <th class="text-center">Created Date</th> <!-- 作成日を表示 -->
+                    <th class="text-center">Deadline</th> <!-- 締め切り日を表示 -->
+                    <th class="text-center">Completed</th> <!-- 完了状態を表示 -->
+                    <th class="text-center">Actions</th> <!-- タスクに対するアクションを表示 -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 各タスクを繰り返してテーブル行として表示 -->
+                <tr th:each="todoItem, iterStat : ${todos}">
+                    <td class="text-center" th:text="${iterStat.index + 1}"></td> <!-- タスク番号を表示 -->
+                    <td class="text-center" th:text="${todoItem.task}"></td> <!-- タスクタイトルを表示 -->
+                    <td class="text-center" th:text="${todoItem.content}"></td> <!-- タスク内容を表示 -->
+                    <td class="text-center" th:text="${#temporals.format(todoItem.createdDate, 'yyyy-MM-dd')}"></td> <!-- 作成日を表示 -->
+                    <td class="text-center" th:text="${todoItem.deadline != null ? #temporals.format(todoItem.deadline, 'yyyy-MM-dd') : 'N/A'}"></td> <!-- 締め切り日を表示または'N/A'を表示 -->
+                    <td class="text-center">
+                        <!-- タスクの完了状態を表示し、チェックボックスで変更可能 -->
+                        <form th:action="@{/todos/complete/{id}(id=${todoItem.id})}" method="post" style="display: inline;">
+                            <input type="hidden" name="completed" value="false" />
+                            <input type="checkbox" name="completed" th:checked="${todoItem.completed}" onchange="this.form.submit()"/>
+                        </form>
+                    </td>
+                    <td class="text-center">
+                        <!-- タスクを編集するボタン -->
+                        <a th:href="@{/todos/edit/{id}(id=${todoItem.id})}" class="btn btn-primary">Edit</a>
+                        <!-- タスクを削除するフォーム -->
+                        <form th:action="@{/todos/delete/{id}(id=${todoItem.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <!-- タスクリストが空の場合に表示する行 -->
+                <tr th:if="${#lists.isEmpty(todos)}">
+                    <td colspan="7" class="text-center">No To-Do items available.</td> <!-- タスクがない場合の通知メッセージ -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
